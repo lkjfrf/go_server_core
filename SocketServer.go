@@ -6,35 +6,37 @@ import (
 )
 
 // TCP,UDP,HTTP Server
-type server struct {
+type SocketServer struct {
 	serverType               string // TCP, UDP
-	port                     string // Address to open connection: localhost:9999
+	port                     string
 	onNewClientCallback      func(c *Client)
 	onClientConnectionClosed func(c *Client, err error)
 	onNewMessage             func(c *Client, pktName string, message string)
 }
 
-// Creates new tcp server instance
-func New(serverType string, port string) *server {
-	log.Println("Creating ", serverType, " server with port", port)
-	server := &server{
+// Creates new tcp SocketServer instance
+func NewSocketServer(serverType string, port string) *SocketServer {
+	log.Println("Creating ", serverType, " SocketServer with port", port)
+	SocketServer := &SocketServer{
 		serverType: serverType,
 		port:       port,
 	}
 
-	server.OnNewClient(func(c *Client) {})
-	server.OnNewMessage(func(c *Client, pktName string, message string) {})
-	server.OnClientConnectionClosed(func(c *Client, err error) {})
+	SocketServer.OnNewClient(func(c *Client) {})
+	SocketServer.OnNewMessage(func(c *Client, pktName string, message string) {})
+	SocketServer.OnClientConnectionClosed(func(c *Client, err error) {})
 
-	return server
+	go SocketServer.Listen()
+
+	return SocketServer
 }
 
-// Listen starts network server
-func (s *server) Listen() {
+// Listen starts network SocketServer
+func (s *SocketServer) Listen() {
 	if s.serverType == "tcp" {
 		listener, err := net.Listen(s.serverType, s.port)
 		if err != nil {
-			log.Fatal("Error starting ", s.serverType, " server.\r\n", err)
+			log.Fatal("Error starting ", s.serverType, " SocketServer.\r\n", err)
 		}
 		defer listener.Close()
 
@@ -70,17 +72,17 @@ func (s *server) Listen() {
 //			CALLBACKS				//
 /////////////////////////////////////
 
-// Called right after server starts listening new client
-func (s *server) OnNewClient(callback func(c *Client)) {
+// Called right after SocketServer starts listening new client
+func (s *SocketServer) OnNewClient(callback func(c *Client)) {
 	s.onNewClientCallback = callback
 }
 
 // Called right after connection closed
-func (s *server) OnClientConnectionClosed(callback func(c *Client, err error)) {
+func (s *SocketServer) OnClientConnectionClosed(callback func(c *Client, err error)) {
 	s.onClientConnectionClosed = callback
 }
 
 // Called when Client receives new message
-func (s *server) OnNewMessage(callback func(c *Client, pktName string, message string)) {
+func (s *SocketServer) OnNewMessage(callback func(c *Client, pktName string, message string)) {
 	s.onNewMessage = callback
 }

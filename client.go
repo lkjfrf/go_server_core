@@ -14,7 +14,7 @@ type Client struct {
 	Tcpconn    net.Conn
 	Udpconn    net.PacketConn
 	UdpAdr     net.Addr
-	Server     *server
+	Server     *SocketServer
 }
 
 // Read client data from channel
@@ -24,8 +24,8 @@ func (c *Client) listen() {
 
 		header := make([]byte, 4)
 		for {
-			namesize, datasize := ParseHeader(header)
 			_, err := c.Tcpconn.Read(header)
+			namesize, datasize := ParseHeader(header)
 			if err != nil {
 				if errors.Is(err, io.EOF) || errors.Is(err, syscall.Errno(10054)) {
 					c.Tcpconn.Close()
