@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text= Go Server Core v1.0.2 &fontSize=90" />
+![header](https://capsule-render.vercel.app/api?type=waving&color=timeGradient&text=GO%20Server%20Core%20%20👋&animation=twinkling&fontSize=35&fontAlignY=40&fontAlign=70&height=250)
 
 //- Contain -//
 1. TCP, UDP, HTTP Server Port Customize
