@@ -2,7 +2,6 @@ package go_server_core
 
 import (
 	"bytes"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -28,19 +27,12 @@ func NewWebServer(listenPort string, sendAddr string) *WebServer {
 	return wb
 }
 
-func (w *WebServer) SendGetPacket(api string, json []byte) {
+func (w *WebServer) SendPostPacket(api string, json []byte) {
 	go func() {
 		url := "http://" + w.SendAddr + "/" + api
-		resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
+		_, err := http.Post(url, "application/json", bytes.NewBuffer(json))
 		if err != nil {
 			log.Println(err)
 		}
-
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println("WEBSEND RESP :", string(body))
-		defer resp.Body.Close()
 	}()
 }
