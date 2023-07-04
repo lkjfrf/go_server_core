@@ -1,5 +1,3 @@
-# go_server_core
- 
  ┌───────────────────────────────────────────────────┐ 
  │               Go Server Core v1.0.2               │ 
  │                    TCP UDP HTTP                   │ 

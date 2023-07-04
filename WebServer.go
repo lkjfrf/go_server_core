@@ -1,6 +1,8 @@
 package go_server_core
 
 import (
+	"bytes"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -9,24 +11,36 @@ import (
 )
 
 type WebServer struct {
-	Port string
-	App  *fiber.App
+	ListenPort string
+	SendAddr   string
+	App        *fiber.App
 }
 
-func NewWebServer(port string) *WebServer {
+func NewWebServer(listenPort string, sendAddr string) *WebServer {
 	wb := &WebServer{
-		Port: port,
+		ListenPort: listenPort,
+		SendAddr:   sendAddr,
 	}
 	wb.App = fiber.New(fiber.Config{})
 	wb.App.Use(logger.New())
 
-	go wb.App.Listen(port)
-
-	resp, err := http.Get("http://127.0.0.1:3000/matchcomplete")
-	if err != nil {
-		log.Println(err)
-	}
-	defer resp.Body.Close()
-
+	go wb.App.Listen(listenPort)
 	return wb
+}
+
+func (w *WebServer) SendGetPacket(api string, json []byte) {
+	go func() {
+		url := "http://" + w.SendAddr + "/" + api
+		resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
+		if err != nil {
+			log.Println(err)
+		}
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println("WEBSEND RESP :", string(body))
+		defer resp.Body.Close()
+	}()
 }
