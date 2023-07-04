@@ -1,7 +1,4 @@
- ┌───────────────────────────────────────────────────┐ \n
- │               Go Server Core v1.0.2               │ 
- │                    TCP UDP HTTP                   │ 
- └───────────────────────────────────────────────────┘ 
+<img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text= Go Server Core v1.0.2 &fontSize=90" />
 
 //- Contain -//
 1. TCP, UDP, HTTP Server Port Customize
